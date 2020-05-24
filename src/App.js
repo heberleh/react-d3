@@ -9,12 +9,22 @@ import { loadAllData } from "./DataHandling";
 
 import CountyMap from "./components/CountyMap";
 import Histogram from "./components/Histogram";
+import { Title, Description } from "./components/Meta";
+import MedianLine from "./components/MedianLine";
+
+import Controls from "./components/Controls";
 
 class App extends Component {
   state = {
     techSalaries: [],
     medianIncomes: [],
     countyNames: [],
+    salariesFilter: () => true,
+    filteredBy: {
+      USstate: "*",
+      year: "*",
+      jobTitle: "*",
+    },
   };
 
   componentDidMount() {
@@ -37,22 +47,52 @@ class App extends Component {
     };
   }
 
+  updateDataFilter = (filter, filteredBy) => {
+    this.setState({
+      salariesFilter: filter,
+      filteredBy: filteredBy,
+    });
+  };
+
   render() {
-    const { techSalaries, countyNames, usTopoJson, USstateNames } = this.state;
+    const {
+      techSalaries,
+      countyNames,
+      usTopoJson,
+      USstateNames,
+      filteredBy,
+    } = this.state;
 
     if (techSalaries.length < 1) {
       return <Preloader />;
     }
 
-    const filteredSalaries = techSalaries,
+    const filteredSalaries = techSalaries.filter(this.state.salariesFilter),
       filteredSalariesMap = _.groupBy(filteredSalaries, "countyID"),
       countyValues = countyNames
         .map((county) => this.countyValue(county, filteredSalariesMap))
         .filter((d) => !_.isNull(d));
 
+    let zoom = null,
+      medianHousehold = this.state.medianIncomesByUSState["US"][0].medianIncome;
+
+    if (filteredBy.USstate !== "*") {
+      zoom = this.state.filteredBy.USstate;
+      medianHousehold = d3.mean(
+        this.state.medianIncomesByUSState[zoom],
+        (d) => d.medianIncome
+      );
+    }
+
     return (
       <div className="App container">
-        <h1>Loaded {techSalaries.length} salaries</h1>
+        <Title data={filteredSalaries} filteredBy={filteredBy} />
+        <Description
+          data={filteredSalaries}
+          allData={techSalaries}
+          filteredBy={filteredBy}
+          medianIncomesByCounty={this.state.medianIncomesByCounty}
+        />
         <svg width="1100" height="500">
           <CountyMap
             usTopoJson={usTopoJson}
@@ -62,8 +102,17 @@ class App extends Component {
             y={0}
             width={500}
             height={500}
-            zoom={null}
+            zoom={zoom}
           />
+
+          <rect
+            x="500"
+            y="0"
+            width="600"
+            height="500"
+            style={{ fill: "white" }}
+          />
+
           <Histogram
             bins={10}
             width={500}
@@ -75,7 +124,21 @@ class App extends Component {
             bottomMargin={5}
             value={(d) => d.base_salary}
           />
+          <MedianLine
+            data={filteredSalaries}
+            x={500}
+            y={10}
+            width={600}
+            height={500}
+            bottomMargin={5}
+            median={medianHousehold}
+            value={(d) => d.base_salary}
+          />
         </svg>
+        <Controls
+          data={techSalaries}
+          updateDataFilter={this.updateDataFilter}
+        />
       </div>
     );
   }
