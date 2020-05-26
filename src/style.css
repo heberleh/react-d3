@@ -4,7 +4,7 @@
 }
 
 .histogram .bar text {
-  fill: #ffffff;
+  fill: #fff;
   font: 12px sans-serif;
 }
 
@@ -19,11 +19,11 @@ button {
 
 .mean text {
   font: 11px sans-serif;
-  fill: gray;
+  fill: grey;
 }
 
 .mean path {
   stroke-dasharray: 3;
-  stroke: gray;
+  stroke: grey;
   stroke-width: 1px;
 }

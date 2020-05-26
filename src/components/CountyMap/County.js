@@ -1,4 +1,3 @@
-// src/components/CountyMap/County.js
 import React, { Component } from "react";
 import _ from "lodash";
 
@@ -13,7 +12,6 @@ const ChoroplethColors = _.reverse([
   "rgb(8,81,156)",
   "rgb(8,48,107)",
 ]);
-
 const BlankColor = "rgb(240,240,240)";
 
 class County extends Component {
@@ -37,5 +35,4 @@ class County extends Component {
     );
   }
 }
-
 export default County;

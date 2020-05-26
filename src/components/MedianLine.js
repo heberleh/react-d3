@@ -12,31 +12,25 @@ const MedianLine = ({
   median,
 }) => {
   const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, value)])
-    .range([height - y - bottomMargin, 0]);
-
-  const line = d3.line()([
-    [0, 5],
-    [width, 5],
-  ]);
+      .scaleLinear()
+      .domain([0, d3.max(data, value)])
+      .range([height - y - bottomMargin, 0]),
+    line = d3.line()([
+      [0, 5],
+      [width, 5],
+    ]);
 
   const medianValue = median || d3.median(data, value);
 
   const translate = `translate(${x}, ${yScale(medianValue)})`,
-    medianLabel = `Median Household: $${yScale.tickFormat()(median)}`;
+    medianLabel = `Median Household: $${yScale.tickFormat()(medianValue)}`;
 
   return (
     <g className="mean" transform={translate}>
-      <text
-        x={width - 5}
-        y="0"
-        textAnchor="end"
-        style={{ background: "purple" }}
-      >
+      <text x={width - 5} y={0} textAnchor="end">
         {medianLabel}
       </text>
-      <path d={line} />
+      <path d={line} />>
     </g>
   );
 };

@@ -18,11 +18,12 @@ const HistogramBar = ({ percent, x, y, width, height }) => {
 
   return (
     <g transform={translate} className="bar">
-      <rect width={width} height={height} transform="translate(0,1)" />
+      <rect width={width} height={height - 2} transform="translate(0, 1)" />
       <text textAnchor="end" x={width - 5} y={height / 2 + 3}>
         {label}
       </text>
     </g>
   );
 };
+
 export default HistogramBar;

@@ -1,4 +1,3 @@
-// src/DataHandling.js
 import * as d3 from "d3";
 import _ from "lodash";
 
@@ -48,7 +47,7 @@ export const loadAllData = (callback = _.noop) => {
     d3.json("data/us.json"),
     d3.csv("data/us-county-names-normalized.csv", cleanCounty),
     d3.csv("data/county-median-incomes.csv", cleanIncome),
-    d3.csv("data/h1bs-2012-2016-shortened.csv", cleanSalary),
+    d3.csv("data/h1bs-2012-2016.csv", cleanSalary),
     d3.tsv("data/us-state-names.tsv", cleanUSStateName),
   ]).then(([us, countyNames, medianIncomes, techSalaries, USstateNames]) => {
     let medianIncomesMap = {};
@@ -56,7 +55,9 @@ export const loadAllData = (callback = _.noop) => {
     medianIncomes
       .filter((d) => _.find(countyNames, { name: d["countyName"] }))
       .forEach((d) => {
-        d["countyID"] = _.find(countyNames, { name: d["countyName"] }).id;
+        d["countyID"] = _.find(countyNames, {
+          name: d["countyName"],
+        }).id;
         medianIncomesMap[d.countyID] = d;
       });
 
