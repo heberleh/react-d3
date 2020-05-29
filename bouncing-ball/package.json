@@ -48,9 +48,9 @@
     "lint-staged": "^10.2.6",
     "prettier": "^2.0.5"
   },
-    "husky": {
-      "hooks": {
-        "pre-commit": "lint-staged"
-      }
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
     }
+  }
 }

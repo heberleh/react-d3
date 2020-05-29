@@ -4,14 +4,10 @@ import * as d3 from "d3";
 import Ball from "./Ball";
 
 class BouncingBall extends Component {
-  constructor() {
-    super();
-
-    this.state = {
-      y: 5,
-      vy: 0,
-    };
-  }
+  state = {
+    y: 5,
+    vy: 0,
+  };
 
   componentDidMount() {
     // start game loop
@@ -24,15 +20,27 @@ class BouncingBall extends Component {
   }
 
   gameLoop = () => {
-    let { y, vy } = this.state;
+    let { y, vy, lastFrame } = this.state;
 
-    if (y > this.props.max_h) {
-      vy = -vy * 0.87;
+    let frames = 1;
+
+    if (lastFrame) {
+      frames = (d3.now() - lastFrame) / (1000 / 60);
+    }
+
+    for (let i = 0; i < frames; i++) {
+      if (y > this.props.max_h) {
+        vy = -vy * 0.95;
+      }
+
+      y = y + vy;
+      vy = vy + 0.1;
     }
 
     this.setState({
-      y: y + vy,
-      vy: vy + 0.3,
+      y,
+      vy,
+      lastFrame: d3.now(),
     });
   };
 
@@ -40,7 +48,7 @@ class BouncingBall extends Component {
     // render Ball at position y
     return (
       <g>
-        <Ball x={10} y={this.state.y} />
+        <Ball x={this.props.x} y={this.state.y} />
       </g>
     );
   }
