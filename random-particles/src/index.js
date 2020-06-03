@@ -1,17 +1,25 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import { select as d3Select } from "d3";
+
+import particlesApp from "./reducers";
+import AppContainer from "./containers/AppContainer";
+import { resizeScreen } from "./actions";
+
+let store = createStore(particlesApp);
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <Provider store={store}>
+    <AppContainer />
+  </Provider>,
+  document.querySelectorAll("#root")[0]
 );
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+let onResize = function () {
+  store.dispatch(resizeScreen(window.innerWidth, window.innerHeight));
+};
+onResize();
+
+d3Select(window).on("resize", onResize);
